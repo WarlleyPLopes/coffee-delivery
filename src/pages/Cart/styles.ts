@@ -209,3 +209,9 @@ export const CheckoutButton = styled.button`
 
   border-radius: 6px;
 `;
+
+export const PaymentErrorMessage = styled.p`
+  ${typography.fonts.textXS};
+  font-weight: 400;
+  color: red;
+`

@@ -1,17 +1,18 @@
 import { produce } from "immer";
-import { ActionTypes, type Actions } from "./actions";
+import { ActionTypes, Actions } from "./actions";
+import { OrderInfo } from "../../pages/Cart";
 
 export interface Item {
   id: string;
   quantity: number;
 }
 
-export interface Order {
+export interface Order extends OrderInfo {
   id: number;
   items: Item[];
 }
 
-export interface CartState {
+interface CartState {
   cart: Item[];
   orders: Order[];
 }
@@ -23,8 +24,9 @@ export function cartReducer(state: CartState, action: Actions) {
         const itemAlreadyAdded = draft.cart.find(
           (item) => item.id === action.payload.item.id
         );
+
         if (itemAlreadyAdded) {
-          itemAlreadyAdded.quantity + -action.payload.item.quantity;
+          itemAlreadyAdded.quantity += action.payload.item.quantity;
         } else {
           draft.cart.push(action.payload.item);
         }
@@ -72,6 +74,7 @@ export function cartReducer(state: CartState, action: Actions) {
 
         action.payload.callback(`/order/${newOrder.id}/success`);
       });
+
     default:
       return state;
   }
