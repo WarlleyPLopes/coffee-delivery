@@ -12,7 +12,7 @@ import {
 } from "./styles";
 import { defaultTheme } from "../../../../styles/themes/default";
 import { QuantityInput } from "../../../../components/Form/QuantityInput/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "../../../../hooks/UseCart";
 
 interface Props {
@@ -28,8 +28,8 @@ interface Props {
 
 export function Card({ coffee }: Props) {
   const [quantity, setQuantity] = useState(1);
-  const [isItemAdded, setIsItemAdded] = useState(false)
-  const {addItem} = useCart()
+  const [isItemAdded, setIsItemAdded] = useState(false);
+  const { addItem } = useCart();
 
   function incrementQuantity() {
     setQuantity((state) => state + 1);
@@ -41,11 +41,27 @@ export function Card({ coffee }: Props) {
     }
   }
 
-  function handleAddItem(){
-    addItem({id: coffee.id, quantity})
-    setIsItemAdded(true)
-    setQuantity(1)
+  function handleAddItem() {
+    addItem({ id: coffee.id, quantity });
+    setIsItemAdded(true);
+    setQuantity(1);
   }
+
+  useEffect(() => {
+    let timeout: number;
+
+    if (isItemAdded) {
+      timeout = setTimeout(() => {
+        setIsItemAdded(false);
+      }, 1000);
+    }
+
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [isItemAdded]);
   return (
     <Container>
       <CoffeeImg src={coffee.image} alt={coffee.title} />
@@ -70,11 +86,7 @@ export function Card({ coffee }: Props) {
             decrementQuantity={decrementQuantity}
           />
           <button disabled={isItemAdded} onClick={handleAddItem}>
-          <ShoppingCart
-              weight="fill"
-              size={22}
-              color={defaultTheme["base-card"]}
-            />
+            <ShoppingCart size={22} color={defaultTheme["base-card"]} />
           </button>
         </Order>
       </Control>

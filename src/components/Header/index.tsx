@@ -1,22 +1,28 @@
+import { Link } from "react-router-dom";
+
 import { HeaderContainer } from "./styles";
-import logo from "../../assets/logo.svg";
+import { useCart } from "../../hooks/UseCart";
 import { MapPin, ShoppingCart } from "phosphor-react";
-import { NavLink } from "react-router-dom";
 
 export function Header() {
+  const { cart } = useCart();
+
   return (
     <HeaderContainer>
-      <img src={logo}/>
+      <Link to="/">
+        <img src="/src/assets/logo.svg" alt="Coffee Delivery" />
+      </Link>
+
       <aside>
         <div>
-          <MapPin size={22} weight="fill" color="#8047F8"/>
-          <span>Vila Velha</span>,<span>ES</span>
+          <MapPin size={22} weight="fill" />
+          <span>Vila Velha, ES</span>
         </div>
 
-        <NavLink to='/cart'>
-          <ShoppingCart size={22} weight="fill" color="#C47F17"/>
-          {/* <span>0</span> */}
-        </NavLink>
+        <Link to={`cart`} aria-disabled={cart.length === 0}>
+          <ShoppingCart size={22} weight="fill" />
+          {cart.length > 0 ? <span>{cart.length}</span> : null}
+        </Link>
       </aside>
     </HeaderContainer>
   );

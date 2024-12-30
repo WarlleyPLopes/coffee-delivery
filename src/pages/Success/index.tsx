@@ -1,8 +1,25 @@
-import { CurrencyDollar, MapPin, Timer } from "phosphor-react";
+import { useParams } from "react-router-dom";
+
 import { Container, Heading, Info, InfoContent, Order } from "./styles";
+import { useCart } from "../../hooks/UseCart";
+import { CurrencyDollar, MapPin, Timer } from "phosphor-react";
 import { defaultTheme } from "../../styles/themes/default";
 
-export function Success(){
+export function Success() {
+  const { orders } = useCart();
+  const { orderId } = useParams();
+  const orderInfo = orders.find((order) => order.id === Number(orderId));
+
+  const paymentMethod = {
+    credit: "Cartão de crédito",
+    debit: "Cartão de débito",
+    cash: "Dinheiro",
+  };
+
+  if (!orderInfo?.id) {
+    return null;
+  }
+
   return (
     <Container>
       <Order>
@@ -22,14 +39,14 @@ export function Success(){
 
               <div>
                 <span>
-                  Entrega em{' '}
+                  Entrega em{" "}
                   <strong>
-                    Fernando Namora, 104
+                    {orderInfo.street}, {orderInfo.number}
                   </strong>
                 </span>
 
                 <span>
-                  Pedrouços - Maia, Porto
+                  {orderInfo.neighborhood} - {orderInfo.city},{orderInfo.state}
                 </span>
               </div>
             </div>
@@ -51,20 +68,21 @@ export function Success(){
             <div>
               <CurrencyDollar
                 color={defaultTheme.white}
-                style={{ backgroundColor: defaultTheme['yellow-500'] }}
+                style={{ backgroundColor: defaultTheme["yellow-500"] }}
                 size={32}
               />
 
               <div>
                 <span>Pagamento na entrega</span>
 
-                <strong>credito</strong>
+                <strong>{paymentMethod[orderInfo.paymentMethod]}</strong>
               </div>
             </div>
           </InfoContent>
         </Info>
       </Order>
+
       <img src="/src/assets/delivery.svg" alt="Pedido concluído" />
     </Container>
-  )
+  );
 }
